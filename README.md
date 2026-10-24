@@ -96,9 +96,14 @@ This makes it possible to compare route selection results and understand how dif
 
 ## 8. Testing
 
-The project uses **JUnit 5** for automated unit testing.
+A total of 29 JUnit 5 tests passed successfully.
 
-A total of **28 tests passed successfully**.
+Test result:
+29 tests, 0 failures, 0 errors.
+
+The tests include boundary testing, strategy switching,
+route validation, budget restrictions, deadline restrictions
+and exception handling.
 
 Tests cover:
 
@@ -166,3 +171,79 @@ This project demonstrates how the Strategy Design Pattern can be used to build a
 The application supports five route selection strategies, automatic strategy selection, route validation, runtime strategy switching, comparison mode and automated testing.
 
 The Strategy Pattern makes the system easier to extend, test and maintain.
+
+## 14. Assignment Questions and Answers
+
+**1. What problem does Strategy solve in this project?**
+
+The Strategy Pattern helps us use different route selection algorithms without writing many if/else conditions in RoutePlanner.
+
+**2. Where is the Context?**
+
+RoutePlanner is the Context. It stores a RouteStrategy object and calls its selectRoute() method.
+
+**3. Where is the Strategy interface?**
+
+RouteStrategy is the Strategy interface. It defines the common methods for all route selection algorithms.
+
+**4. What are the Concrete Strategies?**
+
+The Concrete Strategies are FastestRouteStrategy, CheapestRouteStrategy, EcoFriendlyRouteStrategy, BalancedRouteStrategy and ReliableRouteStrategy.
+
+**5. Where is runtime strategy switching demonstrated?**
+
+Runtime switching is supported by the setStrategy() method in RoutePlanner. It allows the same planner object to use another algorithm.
+
+**6. Why is this Strategy rather than simple if/else?**
+
+Each algorithm is implemented in a separate class. This makes the code easier to maintain, test and extend.
+
+**7. How can a new Strategy be added?**
+
+We create a new class that implements RouteStrategy. Then we can use it in RoutePlanner or register it in StrategySelector without changing the RoutePlanner algorithm.
+
+**8. What is the difference between Strategy and Bridge?**
+
+Strategy focuses on changing algorithms or behaviors. Bridge separates an abstraction from its implementation so both can develop independently. In our previous notification assignment, Bridge separated notification types from message senders.
+
+**9. Which SOLID principles are demonstrated?**
+
+The project demonstrates SRP, OCP and DIP. Different classes have separate responsibilities, new strategies can be added, and RoutePlanner depends on the RouteStrategy interface.
+
+**10. What limitation does your current architecture have?**
+
+The application uses predefined routes and simplified calculations. It does not use real-time traffic, weather or GPS information. Also, strategy explanations are printed directly to the console instead of being returned as structured data.
+
+## 15. Example Console Output
+
+The following is a shortened example of the expected output for the demonstration routes.
+
+```text
+=== RUNTIME STRATEGY SWITCHING ===
+
+1. Fastest Strategy:
+Selected: R5
+
+2. Cheapest Strategy:
+Selected: R6
+
+3. Eco-Friendly Strategy:
+Selected: R5
+
+4. Balanced Strategy:
+Selected: R5
+```
+
+The application also prints explanations showing why each strategy selected a route and why other routes were rejected.
+
+The same RoutePlanner object is used for all four strategies. The algorithm is changed three times using setStrategy().
+
+## 16. Final Testing Summary
+
+- Total JUnit 5 tests: 29
+- Failed tests: 0
+- Errors: 0
+- Five route selection strategies implemented
+- Three runtime strategy switches demonstrated
+- Two UML diagrams included
+- Strategy Pattern and SOLID principles explained

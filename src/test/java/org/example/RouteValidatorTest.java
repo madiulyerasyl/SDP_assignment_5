@@ -83,4 +83,20 @@ public class RouteValidatorTest {
 
         assertFalse(RouteValidator.isValid(route, request));
     }
+
+    @Test
+    void testExactBudgetAndDeadlineBoundary() {
+
+        Route route = new Route(
+                "R1", warehouse, customer,
+                10, 40, 5000, 2.0, true
+        );
+
+        DeliveryRequest request = new DeliveryRequest(
+                DeliveryPriority.STANDARD, 5000, 40, false
+        );
+
+        assertTrue(RouteValidator.isValid(route, request));
+    }
+
 }

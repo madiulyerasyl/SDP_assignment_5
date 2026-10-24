@@ -97,6 +97,40 @@ public class Main {
             System.out.println(route.id() + " -> " + reason);
         }
 
+        System.out.println("\n=== RUNTIME STRATEGY SWITCHING ===");
+
+        DeliveryRequest switchingRequest = new DeliveryRequest(
+                DeliveryPriority.STANDARD, 5000, 40, false
+        );
+
+        RoutePlanner switchingPlanner =
+                new RoutePlanner(new FastestRouteStrategy());
+
+        System.out.println("\n1. Fastest Strategy:");
+        Route result1 = switchingPlanner.plan(routes, switchingRequest);
+        System.out.println("Selected: " + result1.id());
+
+        switchingPlanner.setStrategy(new CheapestRouteStrategy());
+
+        System.out.println("\n2. Cheapest Strategy:");
+        Route result2 = switchingPlanner.plan(routes, switchingRequest);
+        System.out.println("Selected: " + result2.id());
+
+        switchingPlanner.setStrategy(new EcoFriendlyRouteStrategy());
+
+        System.out.println("\n3. Eco-Friendly Strategy:");
+        Route result3 = switchingPlanner.plan(routes, switchingRequest);
+        System.out.println("Selected: " + result3.id());
+
+        switchingPlanner.setStrategy(
+                new BalancedRouteStrategy(0.4, 0.3, 0.1, 0.2)
+        );
+
+        System.out.println("\n4. Balanced Strategy:");
+        Route result4 = switchingPlanner.plan(routes, switchingRequest);
+        System.out.println("Selected: " + result4.id());
+
+
 
     }
 }
