@@ -16,23 +16,31 @@ public class Main {
 
         List<Route> routes = List.of(r1, r2, r3, r4);
 
+
         DeliveryRequest request = new DeliveryRequest(
-                DeliveryPriority.STANDARD,
+                DeliveryPriority.URGENT,
                 5000,
                 40,
                 false
         );
 
-        RoutePlanner planner = new RoutePlanner(
-                new BalancedRouteStrategy(0.4, 0.3, 0.1, 0.2)
-        );
+// Automatically select strategy
+        StrategySelector selector = new StrategySelector();
 
+        RouteStrategy selectedStrategy = selector.selectStrategy(request);
+
+// Create RoutePlanner with selected strategy
+        RoutePlanner planner = new RoutePlanner(selectedStrategy);
+
+// Find the best route
         Route result = planner.plan(routes, request);
 
-        System.out.println("Strategy: Balanced Route");
-        System.out.println("Selected route: " + result.id());
+        System.out.println("Priority: " + request.priority());
+        System.out.println("Selected Strategy: " + selectedStrategy.getStrategyName());
+        System.out.println("Selected Route: " + result.id());
         System.out.println("Time: " + result.estimatedMinutes() + " minutes");
         System.out.println("Cost: " + result.cost());
-        System.out.println("CO2: " + result.carbonEmission());
+
+
     }
 }
