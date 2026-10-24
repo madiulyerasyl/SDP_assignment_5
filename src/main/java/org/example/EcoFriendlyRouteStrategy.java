@@ -12,40 +12,71 @@ public class EcoFriendlyRouteStrategy implements RouteStrategy {
         }
 
         Route bestRoute = null;
-        double lowestScore = Double.MAX_VALUE;
-
-        double emissionWeight = 0.7;
-        double distanceWeight = 0.3;
+        double lowestEcoScore = Double.MAX_VALUE;
 
         for (Route route : routes) {
 
-            // Check budget
-            if (route.cost() > request.maxBudget()) {
-                continue;
-            }
-
-            // Check delivery deadline
-            if (route.estimatedMinutes() > request.maxDeliveryMinutes()) {
+            // Check availability, budget and deadline
+            if (!RouteValidator.isValid(route, request)) {
                 continue;
             }
 
             // Calculate environmental score
-            double ecoScore =
-                    route.carbonEmission() * emissionWeight
-                            + route.distanceKm() * distanceWeight;
+            double ecoScore = route.carbonEmission() * 0.7
+                    + route.distanceKm() * 0.3;
 
-            // Find the route with the lowest eco score
-            if (ecoScore < lowestScore) {
-                lowestScore = ecoScore;
+            // Select route with the lowest eco score
+            if (bestRoute == null || ecoScore < lowestEcoScore) {
                 bestRoute = route;
+                lowestEcoScore = ecoScore;
             }
         }
 
+
         if (bestRoute == null) {
-            throw new IllegalStateException("No suitable route found");
+            throw new NoSuitableRouteException("No suitable route found");
+        }
+
+// Explain eco-friendly route selection
+        System.out.println();
+        System.out.println("=== ECO FRIENDLY STRATEGY EXPLANATION ===");
+
+        for (Route route : routes) {
+
+            // Check delivery constraints
+            if (!RouteValidator.isValid(route, request)) {
+
+                System.out.println(
+                        route.id() + " rejected: "
+                                + RouteValidator.getRejectionReason(route, request)
+                );
+
+                continue;
+            }
+
+            // Calculate environmental score
+            double ecoScore = route.carbonEmission() * 0.7
+                    + route.distanceKm() * 0.3;
+
+            if (route == bestRoute) {
+
+                System.out.println(
+                        route.id() + " selected: lowest EcoScore = "
+                                + ecoScore
+                );
+
+            } else {
+
+                System.out.println(
+                        route.id() + " not selected: EcoScore = "
+                                + ecoScore + ", higher than "
+                                + bestRoute.id()
+                );
+            }
         }
 
         return bestRoute;
+
     }
 
     @Override

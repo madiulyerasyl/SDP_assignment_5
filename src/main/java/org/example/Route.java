@@ -7,6 +7,7 @@ public record Route(
         double distanceKm,
         int estimatedMinutes,
         double cost,
-        double carbonEmission
+        double carbonEmission,
+        boolean available
 ) {
 }

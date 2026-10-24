@@ -1,3 +1,4 @@
+
 package org.example;
 
 import java.util.List;
@@ -15,28 +16,54 @@ public class FastestRouteStrategy implements RouteStrategy {
 
         for (Route route : routes) {
 
-            // Check budget
-            if (route.cost() > request.maxBudget()) {
+            // Check delivery constraints
+            if (!RouteValidator.isValid(route, request)) {
                 continue;
             }
 
-            // Check delivery deadline
-            if (route.estimatedMinutes() > request.maxDeliveryMinutes()) {
-                continue;
-            }
-
-            // Find the fastest valid route
+            // Select the fastest valid route
             if (fastest == null ||
                     route.estimatedMinutes() < fastest.estimatedMinutes()) {
                 fastest = route;
             }
         }
 
+
         if (fastest == null) {
-            throw new IllegalStateException("No suitable route found");
+            throw new NoSuitableRouteException("No suitable route found");
+        }
+
+// Explain the selected route
+        System.out.println();
+        System.out.println("=== FASTEST STRATEGY EXPLANATION ===");
+
+        for (Route route : routes) {
+
+            if (!RouteValidator.isValid(route, request)) {
+
+                System.out.println(
+                        route.id() + " rejected: "
+                                + RouteValidator.getRejectionReason(route, request)
+                );
+
+            } else if (route == fastest) {
+
+                System.out.println(
+                        route.id() + " selected: fastest valid route ("
+                                + route.estimatedMinutes() + " minutes)"
+                );
+
+            } else {
+
+                System.out.println(
+                        route.id() + " not selected: slower than "
+                                + fastest.id()
+                );
+            }
         }
 
         return fastest;
+
     }
 
     @Override
